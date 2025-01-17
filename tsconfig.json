@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    // Runtime environment configuration
+    "target": "ES2022", // Using a more recent ECMAScript target for modern Node.js
+    "module": "commonjs",
+    "lib": ["ES2022"], // Include latest ECMAScript features
+
+    "moduleResolution": "node",
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+
+    "outDir": "./dist",
+    "sourceMap": true,
+
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+
+    // Decorators for TypeORM
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
