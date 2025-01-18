@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from "typeorm";
 import { BookLending } from "./BookLending";
 import { BookRating } from "./BookRating";
 
@@ -15,6 +22,12 @@ export class Book {
 
   @Column()
   year!: number;
+
+  @CreateDateColumn()
+  created_at!: Date;
+
+  @UpdateDateColumn()
+  updated_at!: Date;
 
   @OneToMany(() => BookLending, lending => lending.book)
   lendings!: BookLending[];
