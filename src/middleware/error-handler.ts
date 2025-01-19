@@ -1,4 +1,3 @@
-// src/middleware/errorHandler.ts
 import { Request, Response } from "express";
 
 export const errorHandler = (error: any, _: Request, res: Response) => {

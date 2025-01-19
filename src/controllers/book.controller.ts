@@ -2,9 +2,14 @@ import { Request, Response } from "express";
 import { AppDataSource } from "../data-source";
 import { Book } from "../entities/Book";
 
+/**
+ * Retrieves all books from the database
+ * Returns a sorted list of books with basic information (id, name)
+ */
 export const getBooks = async (_: Request, res: Response) => {
   try {
     const bookRepository = AppDataSource.getRepository(Book);
+    // Fetch books with minimal fields, sorted alphabetically
     const books = await bookRepository.find({
       select: ["id", "name"],
       order: { name: "ASC" },
@@ -15,6 +20,10 @@ export const getBooks = async (_: Request, res: Response) => {
   }
 };
 
+/**
+ * Retrieves detailed information about a specific book
+ * Includes the current borrower and average rating
+ */
 export const getBookById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;

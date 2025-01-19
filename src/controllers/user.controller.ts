@@ -5,6 +5,9 @@ import { Book } from "../entities/Book";
 import { BookLending } from "../entities/BookLending";
 import { BookRating } from "../entities/BookRating";
 
+/**
+ * Retrieves all users with basic information (id, name)
+ */
 export const getUsers = async (_: Request, res: Response) => {
   try {
     const userRepository = AppDataSource.getRepository(User);
@@ -17,11 +20,16 @@ export const getUsers = async (_: Request, res: Response) => {
   }
 };
 
+/**
+ * Retrieves detailed information about a specific user
+ * Includes both currently borrowed books and reading history with ratings
+ */
 export const getUserById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const userRepository = AppDataSource.getRepository(User);
 
+    // Fetch user with related lending and rating data
     const user = await userRepository.findOne({
       where: { id: parseInt(id) },
       relations: ["lendings", "lendings.book", "ratings", "ratings.book"],
@@ -31,6 +39,7 @@ export const getUserById = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    // Get currently borrowed books and reading history
     const presentBooks = user.lendings
       .filter(lending => !lending.isReturned)
       .map(lending => ({
@@ -57,6 +66,10 @@ export const getUserById = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Processes a book borrowing request
+ * Checks availability and creates a new lending record
+ */
 export const borrowBook = async (req: Request, res: Response) => {
   try {
     const { userId, bookId } = req.params;
@@ -68,6 +81,7 @@ export const borrowBook = async (req: Request, res: Response) => {
     const user = await userRepository.findOne({ where: { id: parseInt(userId) } });
     const book = await bookRepository.findOne({ where: { id: parseInt(bookId) } });
 
+    // Validate user and book exist
     if (!user || !book) {
       return res.status(404).json({ message: "User or Book not found" });
     }
@@ -84,6 +98,7 @@ export const borrowBook = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Book is already borrowed" });
     }
 
+    // Create new lending record
     const lending = new BookLending();
     lending.user = user;
     lending.book = book;
@@ -96,6 +111,10 @@ export const borrowBook = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Processes a book return request
+ * Updates lending record and saves optional rating
+ */
 export const returnBook = async (req: Request, res: Response) => {
   try {
     const { userId, bookId } = req.params;
@@ -104,6 +123,7 @@ export const returnBook = async (req: Request, res: Response) => {
     const lendingRepository = AppDataSource.getRepository(BookLending);
     const ratingRepository = AppDataSource.getRepository(BookRating);
 
+    // Find active lending record
     const lending = await lendingRepository.findOne({
       where: {
         user: { id: parseInt(userId) },
