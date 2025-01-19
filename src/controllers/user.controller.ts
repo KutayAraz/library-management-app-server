@@ -33,9 +33,13 @@ export const getUserById = async (req: Request, res: Response) => {
 
     const presentBooks = user.lendings
       .filter(lending => !lending.isReturned)
-      .map(lending => ({ name: lending.book.name }));
+      .map(lending => ({
+        id: lending.book.id, // Include the book ID
+        name: lending.book.name,
+      }));
 
     const pastBooks = user.ratings.map(rating => ({
+      id: rating.book.id, // Include the book ID
       name: rating.book.name,
       userScore: rating.score,
     }));
